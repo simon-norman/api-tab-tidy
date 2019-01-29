@@ -1,7 +1,7 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
-from models.tab_recording import TabRecording as TabRecordingModel
-from models.tab_recording import db
+from models.models import TabRecording as TabRecordingModel
+from models.models import db
 
 
 class TabRecordingObject(SQLAlchemyObjectType):

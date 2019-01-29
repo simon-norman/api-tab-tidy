@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_graphql import GraphQLView
 
-from models.tab_recording import db
+from models.models import db
 from graphql_schemas.tab_schema import schema
 
 
