@@ -1,5 +1,5 @@
 import os
 
-
-class Config(object):
-    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+class DevelopmentConfig(object):
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = os.environ['TAB_TIDY_DB_URL']
