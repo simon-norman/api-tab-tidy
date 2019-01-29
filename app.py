@@ -4,10 +4,15 @@ from flask_graphql import GraphQLView
 from models.tab_recording import db
 from graphql_schemas.tab_schema import schema
 
-app = Flask(__name__)
-app.config.from_object('config.DevelopmentConfig')
 
-db.init_app(app)
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object('config.DevelopmentConfig')
+    db.init_app(app)
+    return app
+
+
+app = create_app()
 
 app.add_url_rule(
     '/graphql',

@@ -1,6 +1,7 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
 from models.tab_recording import TabRecording as TabRecordingModel
+from models.tab_recording import db
 
 
 class TabRecordingObject(SQLAlchemyObjectType):
@@ -11,13 +12,14 @@ class TabRecordingObject(SQLAlchemyObjectType):
 
 class CreateTabRecording(graphene.Mutation):
     class Arguments:
-        tabId = graphene.String(required=True)
+        tabid = graphene.String(required=True)
         status = graphene.String(required=True)
 
     tab_recording = graphene.Field(lambda: TabRecordingObject)
 
-    def mutate(self, info, tab_id, status):
-        tab_recording = TabRecordingModel(tab_id=tab_id, status=status)
+    def mutate(self, info, tabid, status):
+
+        tab_recording = TabRecordingModel(tabid=tabid, status=status)
 
         db.session.add(tab_recording)
         db.session.commit()
