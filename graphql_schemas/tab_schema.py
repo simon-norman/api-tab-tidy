@@ -4,39 +4,47 @@ from models.models import Tab as TabModel
 from models.models import db
 
 
-class TabObject(SQLAlchemyObjectType):
+class Tab(SQLAlchemyObjectType):
     class Meta:
         model = TabModel
         interfaces = (graphene.relay.Node,)
 
 
+class CreateTabInput(graphene.InputObjectType):
+    tab_id = graphene.Int(required=True)
+    created_timestamp = graphene.DateTime(required=True)
+
+
 class CreateTab(graphene.Mutation):
     class Arguments:
-        tab_id = graphene.Int(required=True)
-        created_timestamp = graphene.DateTime(required=True)
+        create_tab_input = CreateTabInput()
 
+    tab = graphene.Field(lambda: Tab)
 
-    tab = graphene.Field(lambda: TabObject)
-
-    def mutate(self, info, tab_id, created_timestamp):
-        tab = TabModel(tab_id=tab_id, created_timestamp=created_timestamp, last_active_timestamp=created_timestamp)
+    def mutate(self, info, create_tab_input):
+        tab = TabModel(tab_id=create_tab_input.tab_id,
+                       created_timestamp=create_tab_input.created_timestamp,
+                       last_active_timestamp=create_tab_input.created_timestamp)
         db.session.add(tab)
         db.session.commit()
         return CreateTab(tab=tab)
 
+
+class UpdateTabInput(graphene.InputObjectType):
+    tab_id = graphene.Int(required=True)
+    closed_timestamp = graphene.DateTime()
+    last_active_timestamp = graphene.DateTime()
+
 class UpdateTab(graphene.Mutation):
     class Arguments:
-        tab_id = graphene.Int(required=True)
-        last_active_timestamp = graphene.DateTime()
-        closed_timestamp = graphene.DateTime()
+        update_tab_input = UpdateTabInput()
 
+    tab = graphene.Field(lambda: Tab)
 
-    tab = graphene.Field(lambda: TabObject)
-
-    def mutate(self, info, tab_id, **kwargs):
-        tab = TabModel.query.get(tab_id)
-        tab.closed_timestamp = kwargs.get('closed_timestamp', None)
-        tab.last_active_timestamp = kwargs.get('last_active_timestamp', None)
+    def mutate(self, info, update_tab_input):
+        tab = TabModel.query.get(update_tab_input.tab_id)
+        tab.closed_timestamp = update_tab_input.closed_timestamp
+        tab.last_active_timestamp = update_tab_input.last_active_timestamp
         db.session.commit()
         return UpdateTab(tab=tab)
 
