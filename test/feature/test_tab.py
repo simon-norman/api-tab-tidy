@@ -1,4 +1,5 @@
 import pytest
+import json
 from app import create_app
 
 
@@ -16,5 +17,34 @@ def test_client():
     context.pop()
 
 
-def test_smoke_api(test_client):
-    response = test_client.get('/graphql')
+create_tab_string = '''mutation CreateTab($CreateTabInput: CreateTabInput!) {
+    createTab(createTabInput: $CreateTabInput) {
+      tab {
+        tabId
+      }
+    }
+  }'''
+
+create_tab_body = {
+    'query': create_tab_string,
+    'variables': {
+        'create_tab_input': {
+            'tab_id': 1,
+            'created_timestamp': 'Thu, 21 Feb 2019 14:09:09 GMT',
+        }
+    },
+}
+
+
+def test_create_tab(test_client):
+    # expect that response is 200, for starters
+    # create query string
+    # create nested dictionary and jsonify it (?) for payload
+    print(create_tab_body['query'])
+    response = test_client.post(
+        '/graphql', 
+        data=json.dumps(create_tab_body),
+        content_type='application/json'
+    )
+    print(response)
+    
