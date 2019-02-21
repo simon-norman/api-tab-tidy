@@ -1,23 +1,7 @@
-import pytest
 import json
-from app import create_app
 
 
-@pytest.fixture
-def test_client():
-    app = create_app()
-    app.config['TESTING'] = True
-    test_client = app.test_client()
-
-    context = app.app_context()
-    context.push()
-
-    yield test_client
-
-    context.pop()
-
-
-create_tab_string = '''mutation create_tab($CreateTabInput: CreateTabInput!) {
+create_tab_mutation = '''mutation create_tab($CreateTabInput: CreateTabInput!) {
     createTab(createTabInput: $CreateTabInput) {
       tab {
         tabId
@@ -25,8 +9,8 @@ create_tab_string = '''mutation create_tab($CreateTabInput: CreateTabInput!) {
     }
   }'''
 
-create_tab_body = {
-    'query': create_tab_string,
+create_tab_post_body = {
+    'query': create_tab_mutation,
     'variables': {
         'CreateTabInput': {
             'tabId': 1,
@@ -39,9 +23,10 @@ create_tab_body = {
 def test_create_tab(test_client):
     response = test_client.post(
         '/graphql', 
-        data=json.dumps(create_tab_body),
+        data=json.dumps(create_tab_post_body),
         content_type='application/json'
     )
+    
     assert response.status_code == 200
     
     

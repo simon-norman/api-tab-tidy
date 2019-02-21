@@ -35,7 +35,8 @@
         "pythonPath": "${config:python.pythonPath}",
         "module": "pytest",
         "args": [
-            "-sv"
+            "-sv",
+            "--disable-warnings"
         ],
         "cwd": "${workspaceRoot}",
         "debugOptions": [

@@ -3,6 +3,7 @@ import os
 
 class Config(object):
     ENV = os.environ['ENVIRONMENT']
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class DevelopmentConfig(Config):
