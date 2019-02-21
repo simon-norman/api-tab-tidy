@@ -34,6 +34,7 @@ class UpdateTabInput(graphene.InputObjectType):
     tab_id = graphene.Int(required=True)
     closed_timestamp = graphene.DateTime()
     last_active_timestamp = graphene.DateTime()
+    
 
 class UpdateTab(graphene.Mutation):
     class Arguments:
