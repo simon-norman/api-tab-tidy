@@ -18,4 +18,3 @@ def test_client():
 
 def test_smoke_api(test_client):
     response = test_client.get('/graphql')
-    print(response)
