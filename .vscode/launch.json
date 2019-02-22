@@ -36,9 +36,10 @@
         "module": "pytest",
         "args": [
             "-sv",
-            "--disable-warnings"
+            "--disable-warnings",
+            "-m ftest"
         ],
-        "cwd": "${workspaceRoot}",
+        "cwd": "${workspaceRoot}/app",
         "debugOptions": [
             "WaitOnAbnormalExit",
             "WaitOnNormalExit",
@@ -57,7 +58,7 @@
             "-sv",
             "-m unittest"
         ],
-        "cwd": "${workspaceRoot}",
+        "cwd": "${workspaceRoot}/app",
         "debugOptions": [
             "WaitOnAbnormalExit",
             "WaitOnNormalExit",
