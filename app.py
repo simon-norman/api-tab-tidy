@@ -2,7 +2,7 @@ from flask import Flask
 from flask_graphql import GraphQLView
 from flask_cors import CORS
 
-from models.models import db
+from models.tab import db
 from graphql_schemas.tab_schema import schema
 
 

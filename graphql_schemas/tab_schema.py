@@ -1,7 +1,7 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from models.models import Tab as TabModel
-from models.models import db
+from models.tab import Tab as TabModel
+from models.tab import db
 
 
 class Tab(SQLAlchemyObjectType):

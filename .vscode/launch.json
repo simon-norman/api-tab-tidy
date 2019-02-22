@@ -28,7 +28,7 @@
     },
 
     {
-        "name": "PyTest",
+        "name": "Feature tests",
         "type": "python",
         "request": "launch",
         "stopOnEntry": false,
@@ -37,6 +37,25 @@
         "args": [
             "-sv",
             "--disable-warnings"
+        ],
+        "cwd": "${workspaceRoot}",
+        "debugOptions": [
+            "WaitOnAbnormalExit",
+            "WaitOnNormalExit",
+            "RedirectOutput"
+        ]
+    },
+
+    {
+        "name": "Unit tests",
+        "type": "python",
+        "request": "launch",
+        "stopOnEntry": false,
+        "pythonPath": "${config:python.pythonPath}",
+        "module": "pytest",
+        "args": [
+            "-sv",
+            "-m unittest"
         ],
         "cwd": "${workspaceRoot}",
         "debugOptions": [
