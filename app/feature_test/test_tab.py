@@ -28,7 +28,7 @@ def test_create_tab(test_client):
         data=json.dumps(create_tab_post_body),
         content_type='application/json'
     )
-    
-    assert response.status_code == 200
+
+    assert 'errors' not in response.json
     
     
