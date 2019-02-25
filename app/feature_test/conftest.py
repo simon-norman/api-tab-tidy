@@ -4,31 +4,39 @@ from app.models.tab import Tab
 import pytest
 
 
-@pytest.fixture
-def test_client():
-    app = create_test_app()
-    context = app.app_context()
-    context.push()
-
-    reset_db()
-
-    yield app.test_client()
-
-    context.pop()
-
-
-def create_test_app():
+@pytest.fixture(scope="module")
+def test_app():
     app = create_app()
     app.config['TESTING'] = True
     return app
 
 
-def reset_db():
+@pytest.fixture
+def test_client(test_app):
+    context = test_app.app_context()
+    context.push()
+
     db.drop_all()
     db.create_all()
 
+    yield test_app.test_client()
 
-@pytest.fixture
+    context.pop()
+
+
+def generate_tab_mutation_string(mutation_action):
+    action_lower = mutation_action.lower()
+
+    return '''mutation {action}_tab(${action}TabInput: {action}TabInput!) {{
+        {action_lower}Tab({action_lower}TabInput: ${action}TabInput) {{
+            tab {{
+                tabId
+            }}
+        }}
+    }}'''.format(action=mutation_action, action_lower=action_lower)
+
+
+@pytest.fixture(scope="module")
 def new_tab():
     return {
         'tabId': 1,
@@ -36,19 +44,9 @@ def new_tab():
     }
 
 
-@pytest.fixture
-def create_tab_mutation():
-    return '''mutation create_tab($CreateTabInput: CreateTabInput!) {
-        createTab(createTabInput: $CreateTabInput) {
-            tab {
-                tabId
-            }
-        }
-    }'''
-
-
-@pytest.fixture
-def create_tab_post_body(create_tab_mutation, new_tab):
+@pytest.fixture(scope="module")
+def create_tab_post_body(new_tab):
+    create_tab_mutation = generate_tab_mutation_string('Create')
     return {
         'query': create_tab_mutation,
         'variables': {
@@ -69,3 +67,20 @@ def saved_tab(new_tab):
     return tab
 
 
+@pytest.fixture
+def updated_tab_to_be_saved(saved_tab):
+    return {
+        'tabId': saved_tab.tab_id,
+        'closedTimestamp': '2021-02-21T16:33:42+00:00',
+        'lastActiveTimestamp': '2020-10-21T14:33:42+00:00'
+    }
+
+@pytest.fixture
+def update_tab_post_body(updated_tab_to_be_saved):
+    update_tab_mutation = generate_tab_mutation_string('Update')
+    return {
+        'query': update_tab_mutation,
+        'variables': {
+            'UpdateTabInput': updated_tab_to_be_saved
+        },
+    }
