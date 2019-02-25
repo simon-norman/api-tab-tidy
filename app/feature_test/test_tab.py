@@ -2,39 +2,52 @@ import json
 import pytest
 from app.models.tab import Tab
 
-tab = {
-    'tabId': 1,
-    'createdTimestamp': '2019-02-21T14:33:42+00:00',
-}
 
-create_tab_mutation = '''mutation create_tab($CreateTabInput: CreateTabInput!) {
-    createTab(createTabInput: $CreateTabInput) {
+def call_tab_api(test_client, data):
+    return test_client.post(
+        '/graphql', 
+        data=json.dumps(data),
+        content_type='application/json'
+    )
+
+
+@pytest.mark.ftest
+def test_create_tab(test_client, create_tab_post_body, new_tab):
+    response = call_tab_api(test_client, create_tab_post_body)
+
+    saved_tab = Tab.query.all()[0]
+
+    assert saved_tab.created_timestamp.isoformat() == new_tab['createdTimestamp']
+    assert saved_tab.tab_id == new_tab['tabId']
+    assert 'errors' not in response.json
+
+
+update_tab_mutation = '''mutation update_tab($UpdateTabInput: UpdateTabInput!) {
+    updateTab(updateTabInput: $UpdateTabInput) {
       tab {
         tabId
       }
     }
   }'''
 
-create_tab_post_body = {
-    'query': create_tab_mutation,
+update_tab_post_body = {
+    'query': update_tab_mutation,
     'variables': {
-        'CreateTabInput': tab
+        'UpdateTabInput': ''
     },
 }
 
 
 @pytest.mark.ftest
-def test_create_tab(test_client):
-    response = test_client.post(
-        '/graphql', 
-        data=json.dumps(create_tab_post_body),
-        content_type='application/json'
-    )
+def test_update_tab(test_client, saved_tab):
+    updated_tab = {
+        'tabId': saved_tab.tab_id,
+        'closedTimestamp': '2021-02-21T16:33:42+00:00',
+        'lastActiveTimestamp': '2020-10-21T14:33:42+00:00'
+    }
+    update_tab_post_body['variables']['UpdateTabInput'] = updated_tab
+    response = call_tab_api(test_client, update_tab_post_body)
 
-    saved_tab = Tab.query.all()[0]
-
-    assert saved_tab.created_timestamp.isoformat() == tab['createdTimestamp']
-    assert saved_tab.tab_id == tab['tabId']
     assert 'errors' not in response.json
     
     
