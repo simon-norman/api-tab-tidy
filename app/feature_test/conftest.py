@@ -5,18 +5,21 @@ import pytest
 
 @pytest.fixture
 def test_client():
-    app = create_app()
-    app.config['TESTING'] = True
-    test_client = app.test_client()
-
+    app = create_test_app()
     context = app.app_context()
     context.push()
 
     reset_db()
 
-    yield test_client
+    yield app.test_client()
 
     context.pop()
+
+
+def create_test_app():
+    app = create_app()
+    app.config['TESTING'] = True
+    return app
 
 
 def reset_db():
