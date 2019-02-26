@@ -22,9 +22,12 @@ class CreateTab(graphene.Mutation):
     tab = graphene.Field(lambda: Tab)
 
     def mutate(self, info, create_tab_input):
-        tab = TabModel(tab_id=create_tab_input.tab_id,
-                       created_timestamp=create_tab_input.created_timestamp,
-                       last_active_timestamp=create_tab_input.created_timestamp)
+        tab = TabModel(
+            tab_id=create_tab_input.tab_id,
+            created_timestamp=create_tab_input.created_timestamp,
+            last_active_timestamp=create_tab_input.created_timestamp
+        )
+        
         db.session.add(tab)
         db.session.commit()
         return CreateTab(tab=tab)

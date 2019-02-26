@@ -75,6 +75,7 @@ def updated_tab_to_be_saved(saved_tab):
         'lastActiveTimestamp': '2020-10-21T14:33:42+00:00'
     }
 
+
 @pytest.fixture
 def update_tab_post_body(updated_tab_to_be_saved):
     update_tab_mutation = generate_tab_mutation_string('Update')
