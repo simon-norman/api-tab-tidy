@@ -2,3 +2,4 @@
 *.spyproject
 venv
 env
+app/env

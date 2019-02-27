@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plot
 import pandas as pandas
-from sklearn.model_selection import train_test_split#
+from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import roc_auc_score
