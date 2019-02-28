@@ -1,6 +1,7 @@
 import pytest
 import datetime
 from app.models.tab import Tab
+from app.models.inactive_tab_rec import InactiveTabRecording
 from app.extensions import db
 from flask import Flask
 
@@ -15,7 +16,7 @@ def test_app():
     return app
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture()
 def test_tab_db(test_app):
     db.init_app(test_app)
     db.drop_all()
@@ -35,12 +36,33 @@ def create_tab_in_db(test_tab_db, tab_id, last_active_timestamp):
     test_tab_db.session.commit()
 
 
-@pytest.fixture(scope="module")
-def tab_db_with_test_data(test_tab_db):
+def create_inactive_tab_rec_in_db(
+    test_tab_db, 
+    tab_id, 
+    last_active_timestamp
+):
+    active_timestamp = last_active_timestamp - datetime.timedelta(seconds=60)
+    inactive_tab_rec = InactiveTabRecording(
+        tab_id=tab_id,
+        active_timestamp=active_timestamp.isoformat(),
+        inactive_timestamp=last_active_timestamp,
+    )
+    
+    test_tab_db.session.add(inactive_tab_rec)
+    test_tab_db.session.commit()
+
+
+@pytest.fixture()
+def tab_db_with_test_tab_data(test_tab_db):
     last_active_timestamp = datetime.datetime(2019, 2, 21, 14, 35, 0, 0)
   
     for tab_id in range(0, 100):
         create_tab_in_db(test_tab_db, tab_id, last_active_timestamp)
+        create_inactive_tab_rec_in_db(
+            test_tab_db, 
+            tab_id, 
+            last_active_timestamp
+        )
 
         last_active_timestamp \
             = last_active_timestamp + datetime.timedelta(seconds=60)
