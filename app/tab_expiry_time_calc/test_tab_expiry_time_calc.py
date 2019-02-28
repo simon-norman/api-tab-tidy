@@ -10,20 +10,24 @@ class MockRec:
         self.active_timestamp = active_timestamp
 
 
-@patch('app.tab_expiry_time_calc.tab_expiry_time_calc.InactiveTabRecording')
-@pytest.mark.unittest
-def test_calc_expiry_time(MockInactiveTabRec):
-    test_inactive_rec_data = []
+def create_inactive_rec_data():
+    inactive_rec_data = []
     inactive_timestamp = datetime.datetime(2020, 1, 1, 0, 0, 0)
     active_timestamp = datetime.datetime(2020, 1, 1, 0, 0, 30)
 
     for tab_id in range(0, 500):
         mock_rec = MockRec(inactive_timestamp, active_timestamp)
-        
-        test_inactive_rec_data.append(mock_rec)
+        inactive_rec_data.append(mock_rec)
+    
+    return inactive_rec_data
 
+
+@patch('app.tab_expiry_time_calc.tab_expiry_time_calc.InactiveTabRecording')
+@pytest.mark.unittest
+def test_calc_expiry_time(MockInactiveTabRec):
     mock_inactive_tab_rec = MagicMock()
-    mock_inactive_tab_rec.query.all.return_value = test_inactive_rec_data
+    mock_inactive_tab_rec.query.all.return_value = create_inactive_rec_data()
+    
     MockInactiveTabRec.return_value = mock_inactive_tab_rec
 
     tab_expiry_time_calc = TabExpiryTimeCalc()
