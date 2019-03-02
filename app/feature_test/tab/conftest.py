@@ -1,27 +1,4 @@
-from app.app import create_app
-from app.extensions import db
-from app.models.tab import Tab
 import pytest
-
-
-@pytest.fixture(scope="module")
-def test_app():
-    app = create_app()
-    app.config['TESTING'] = True
-    return app
-
-
-@pytest.fixture
-def test_client(test_app):
-    context = test_app.app_context()
-    context.push()
-
-    db.drop_all()
-    db.create_all()
-
-    yield test_app.test_client()
-
-    context.pop()
 
 
 def generate_tab_mutation_string(mutation_action):
@@ -37,14 +14,6 @@ def generate_tab_mutation_string(mutation_action):
 
 
 @pytest.fixture(scope="module")
-def new_tab():
-    return {
-        'tabId': 1,
-        'createdTimestamp': '2019-02-21T14:33:42+00:00',
-    }
-
-
-@pytest.fixture(scope="module")
 def create_tab_post_body(new_tab):
     create_tab_mutation = generate_tab_mutation_string('Create')
     return {
@@ -53,18 +22,6 @@ def create_tab_post_body(new_tab):
             'CreateTabInput': new_tab
         },
     }
-
-
-@pytest.fixture
-def saved_tab(new_tab):
-    tab = Tab(
-        tab_id=new_tab['tabId'],
-        created_timestamp=new_tab['createdTimestamp']
-    )
-    db.session.add(tab)
-    db.session.commit()
-
-    return tab
 
 
 @pytest.fixture

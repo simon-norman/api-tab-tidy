@@ -14,7 +14,7 @@ def create_app():
 
     add_routes(app)
     CORS(app)
-    
+
     return app
 
 
