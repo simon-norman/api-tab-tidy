@@ -5,7 +5,7 @@ from app.models.tab import Tab
 
 def call_tab_api(test_client, data):
     return test_client.post(
-        '/graphql', 
+        '/graphql',
         data=json.dumps(data),
         content_type='application/json'
     )

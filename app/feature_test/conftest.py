@@ -42,3 +42,26 @@ def update_tab_post_body(updated_tab_to_be_saved):
             'UpdateTabInput': updated_tab_to_be_saved
         },
     }
+
+
+def inactive_rec_mutation_string(mutation_action):
+    action_lower = mutation_action.lower()
+
+    return '''mutation {action}_inactive_rec(${action}InactiveRecInput: {action}InactiveRecInput!) {{
+        {action_lower}InactiveRec({action_lower}InactiveRecInput: ${action}InactiveRecInput) {{
+            inactiveRec {{
+                id
+            }}
+        }}
+    }}'''.format(action=mutation_action, action_lower=action_lower)
+
+
+@pytest.fixture
+def create_inactive_rec_body(new_inactive_rec):
+    create_inactive_rec_mutation = inactive_rec_mutation_string('Create')
+    return {
+        'query': create_inactive_rec_mutation,
+        'variables': {
+            'CreateInactiveRecInput': new_inactive_rec
+        },
+    }

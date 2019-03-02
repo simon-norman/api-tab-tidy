@@ -3,7 +3,7 @@ from flask_graphql import GraphQLView
 from flask_cors import CORS
 from .extensions import db
 
-from app.graphql_schemas.tab_schema import schema
+from app.graphql_schemas.schema import schema
 
 
 def create_app():

@@ -77,6 +77,15 @@ def create_tab_in_db(test_tab_db, tab_id, created_timestamp):
     return tab
 
 
+@pytest.fixture
+def new_inactive_rec(saved_tab):
+    return {
+        'tabId': saved_tab.tab_id,
+        'inactiveTimestamp': '2020-01-01T00:00:00+00:00',
+        'activeTimestamp': '2020-01-01T00:00:30+00:00'
+    }
+
+
 def create_inactive_tab_rec_in_db(
     test_tab_db,
     tab_id,
