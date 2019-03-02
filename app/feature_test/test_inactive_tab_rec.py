@@ -1,6 +1,6 @@
 import json
 import pytest
-from app.models.inactive_tab_rec import InactiveTabRecording
+from app.models.inactive_rec import InactiveRec
 
 
 def call_tab_api(test_client, data):
@@ -19,7 +19,7 @@ def test_create_inactive_rec(
 ):
     response = call_tab_api(test_client, create_inactive_rec_body)
 
-    saved_rec = InactiveTabRecording.query.all()[0]
+    saved_rec = InactiveRec.query.all()[0]
     saved_active_time = saved_rec.active_timestamp.isoformat()
     saved_inactive_time = saved_rec.inactive_timestamp.isoformat()
 

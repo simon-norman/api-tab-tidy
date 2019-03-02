@@ -4,7 +4,7 @@ from flask import Flask
 from app.extensions import db
 from app.models.tab import Tab
 from app.app import create_app
-from app.models.inactive_tab_rec import InactiveTabRecording
+from app.models.inactive_rec import InactiveRec
 
 
 @pytest.fixture(scope="module")
@@ -59,11 +59,11 @@ def new_tab():
 
 @pytest.fixture
 def saved_tab(new_tab, test_tab_db):
-    tab = create_tab_in_db(
-        test_tab_db=test_tab_db,
+    tab = Tab(
         tab_id=new_tab['tabId'],
-        created_timestamp=new_tab['createdTimestamp']
+        created_timestamp=new_tab['createdTimestamp'],
     )
+    commit_data_to_db(test_tab_db, tab)
     return tab
 
 
@@ -72,18 +72,8 @@ def create_tab_in_db(test_tab_db, tab_id, created_timestamp):
         tab_id=tab_id,
         created_timestamp=created_timestamp,
     )
-    test_tab_db.session.add(tab)
-    test_tab_db.session.commit()
+    commit_data_to_db(test_tab_db, tab)
     return tab
-
-
-@pytest.fixture
-def new_inactive_rec(saved_tab):
-    return {
-        'tabId': saved_tab.tab_id,
-        'inactiveTimestamp': '2020-01-01T00:00:00+00:00',
-        'activeTimestamp': '2020-01-01T00:00:30+00:00'
-    }
 
 
 def create_inactive_tab_rec_in_db(
@@ -92,14 +82,18 @@ def create_inactive_tab_rec_in_db(
     last_active_timestamp
 ):
     active_timestamp = last_active_timestamp - datetime.timedelta(seconds=60)
-    inactive_tab_rec = InactiveTabRecording(
+    inactive_tab_rec = InactiveRec(
         tab_id=tab_id,
         active_timestamp=active_timestamp.isoformat(),
         inactive_timestamp=last_active_timestamp,
     )
 
-    test_tab_db.session.add(inactive_tab_rec)
-    test_tab_db.session.commit()
+    commit_data_to_db(test_tab_db, inactive_tab_rec)
+
+
+def commit_data_to_db(db, data):
+    db.session.add(data)
+    db.session.commit()
 
 
 @pytest.fixture()

@@ -1,10 +1,10 @@
-from app.models.inactive_tab_rec import InactiveTabRecording
+from app.models.inactive_rec import InactiveRec
 from statistics import mean
 
 
 class TabExpiryTimeCalc:
     def __init__(self):
-        self.inactive_tab_rec = InactiveTabRecording()
+        self.inactive_tab_rec = InactiveRec()
 
     def expiry_time(self):
         inactive_times = []
@@ -19,4 +19,3 @@ class TabExpiryTimeCalc:
     def calc_inactive_time(self, rec):
         inactive_time = rec.active_timestamp - rec.inactive_timestamp
         return inactive_time.seconds
-

@@ -1,7 +1,7 @@
 from app.extensions import db
 
 
-class InactiveTabRecording(db.Model):
+class InactiveRec(db.Model):
     __tablename__ = 'inactive_tab_recordings'
     id = db.Column(db.Integer, primary_key=True)
     tab_id = db.Column(db.Integer)

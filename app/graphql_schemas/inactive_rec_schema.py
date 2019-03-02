@@ -1,6 +1,6 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from app.models.inactive_tab_rec import InactiveTabRecording as InactiveRecModel
+from app.models.inactive_rec import InactiveRec as InactiveRecModel
 from app.extensions import db
 
 

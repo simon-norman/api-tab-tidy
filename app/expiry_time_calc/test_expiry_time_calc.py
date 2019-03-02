@@ -22,7 +22,7 @@ def create_inactive_rec_data():
     return inactive_rec_data
 
 
-@patch('app.expiry_time_calc.expiry_time_calc.InactiveTabRecording')
+@patch('app.expiry_time_calc.expiry_time_calc.InactiveRec')
 @pytest.mark.unittest
 def test_calc_expiry_time(MockInactiveTabRec):
     mock_inactive_tab_rec = MagicMock()

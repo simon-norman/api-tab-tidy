@@ -56,6 +56,3 @@ class UpdateTab(graphene.Mutation):
 class Mutation(graphene.ObjectType):
     create_tab = CreateTab.Field()
     update_tab = UpdateTab.Field()
-
-
-schema = graphene.Schema(mutation=Mutation)

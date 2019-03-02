@@ -1,7 +1,18 @@
 import pytest
 
 
-def generate_tab_mutation_string(mutation_action):
+@pytest.fixture(scope="module")
+def create_tab_post_body(new_tab):
+    create_tab_mutation = tab_mutation_string('Create')
+    return {
+        'query': create_tab_mutation,
+        'variables': {
+            'CreateTabInput': new_tab
+        },
+    }
+
+
+def tab_mutation_string(mutation_action):
     action_lower = mutation_action.lower()
 
     return '''mutation {action}_tab(${action}TabInput: {action}TabInput!) {{
@@ -11,17 +22,6 @@ def generate_tab_mutation_string(mutation_action):
             }}
         }}
     }}'''.format(action=mutation_action, action_lower=action_lower)
-
-
-@pytest.fixture(scope="module")
-def create_tab_post_body(new_tab):
-    create_tab_mutation = generate_tab_mutation_string('Create')
-    return {
-        'query': create_tab_mutation,
-        'variables': {
-            'CreateTabInput': new_tab
-        },
-    }
 
 
 @pytest.fixture
@@ -35,11 +35,31 @@ def updated_tab_to_be_saved(saved_tab):
 
 @pytest.fixture
 def update_tab_post_body(updated_tab_to_be_saved):
-    update_tab_mutation = generate_tab_mutation_string('Update')
+    update_tab_mutation = tab_mutation_string('Update')
     return {
         'query': update_tab_mutation,
         'variables': {
             'UpdateTabInput': updated_tab_to_be_saved
+        },
+    }
+
+
+@pytest.fixture
+def new_inactive_rec(saved_tab):
+    return {
+        'tabId': saved_tab.tab_id,
+        'inactiveTimestamp': '2020-01-01T00:00:00+00:00',
+        'activeTimestamp': '2020-01-01T00:00:30+00:00'
+    }
+
+
+@pytest.fixture
+def create_inactive_rec_body(new_inactive_rec):
+    create_inactive_rec_mutation = inactive_rec_mutation_string('Create')
+    return {
+        'query': create_inactive_rec_mutation,
+        'variables': {
+            'CreateInactiveRecInput': new_inactive_rec
         },
     }
 
@@ -54,14 +74,3 @@ def inactive_rec_mutation_string(mutation_action):
             }}
         }}
     }}'''.format(action=mutation_action, action_lower=action_lower)
-
-
-@pytest.fixture
-def create_inactive_rec_body(new_inactive_rec):
-    create_inactive_rec_mutation = inactive_rec_mutation_string('Create')
-    return {
-        'query': create_inactive_rec_mutation,
-        'variables': {
-            'CreateInactiveRecInput': new_inactive_rec
-        },
-    }
